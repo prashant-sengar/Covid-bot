@@ -3,7 +3,7 @@ import json
 import os
 from flask import (Flask,request, make_response)
 import sms
-
+from firedb import db_access
 # Flask app should start in global layout
 app = Flask(__name__)
 
@@ -30,20 +30,47 @@ def webhook():
 
 def processRequest(req):
    
-   # query_response = req["queryResult"]
-    sms.text()    
-    
-    res = get_data()
-
+    query_response = req["queryResult"]
+    params=query_response.get('parameters')
+    city=params.get('geo-city')
+    id=int(params.get('number')) 
+    print(city,'\n',id)   
+    if(city!=None):
+        res=send_text(city)
+    if(id!=None):
+        res=db_access(id)
+    #res = get_data()
     return res
 
 
-def get_data():
+def db(id):
+    res=db_access(id)
+    print(res,'\n')
+    if(res=='-1'):
+        return {
+            "fulfillmentText": "Doctor doesn't exist"
+        }
+    else:
+        return {
+            "fulfillmentText": "Welcome Dr."+res+". Please enter Patient ID"
+        }       
+
+
+
+def send_text(city):
+    sms.text(city)
     speech = "Your appointment has been made. Please check your texts."
 
     return {
         "fulfillmentText": speech
     }
+
+#def get_data():
+#    speech = "Your appointment has been made. Please check your texts."
+
+#    return {
+#        "fulfillmentText": speech
+#    }
 
 
 if __name__ == '__main__':
