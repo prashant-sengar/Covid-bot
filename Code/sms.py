@@ -3,7 +3,7 @@ def text(city):
     from twilio.rest import Client 
  
     account_sid = 'ACf06f4f617c93c803975128f3ad2a8049' 
-    auth_token = '32e259d7b02e8a3f81d29126194ed0d3' 
+    auth_token = 'xxxxxxxxxxxxxxxxxxxxxx' 
     client = Client(account_sid, auth_token) 
 
  
